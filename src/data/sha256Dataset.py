@@ -26,32 +26,61 @@ def convert_bytes_to_binary_str_representation(data: bytes) -> str:
     return binary_representation
 
 
-class SHA256EncryptionDataset(Dataset):
-    INPUT_BITS_SIZE = 256
-    INPUT_BYTE_SIZE = INPUT_BITS_SIZE // 8
-    SHA256_BYTE_SIZE = 256
+DEFAULT_INPUT_BITS_SIZE = 256
+DEFAULT_INPUT_BYTE_SIZE = DEFAULT_INPUT_BITS_SIZE // 8
+SHA256_BITS_SIZE = 256
 
-    def __init__(self):
-        pass
+
+class SHA256EncryptionDataset(Dataset):
+    """
+    Input: random bits
+    Target: sha256 value of the random bits
+
+    Aim: To train a model to predict the sha256 value of the random bits
+    """
+
+    def __init__(self, input_bits_size=DEFAULT_INPUT_BITS_SIZE):
+        self.input_byte_size = input_bits_size // 8
 
     def __len__(self):
         # raise NotImplementedError("Dataset has no fixed length")
         return 1000
 
     def __getitem__(self, idx):
-        random_256bits = get_random_bytes(SHA256EncryptionDataset.INPUT_BYTE_SIZE)
-        random_256bits_str = convert_bytes_to_binary_str_representation(random_256bits)
-        input = binary_str_to_tensor(random_256bits_str)
+        random_bits: bytes = get_random_bytes(self.input_byte_size)
+        random_bits_str: str = convert_bytes_to_binary_str_representation(random_bits)
+        input: torch.Tensor = binary_str_to_tensor(random_bits_str)
 
-        sha256_value = hashlib.sha256(random_256bits).digest()
-        sha256_value_str = convert_bytes_to_binary_str_representation(sha256_value)
-        output = binary_str_to_tensor(sha256_value_str)
+        sha256_value: bytes = hashlib.sha256(random_bits).digest()
+        sha256_value_str: str = convert_bytes_to_binary_str_representation(sha256_value)
+        output: torch.Tensor = binary_str_to_tensor(sha256_value_str)
         return input, output
 
 
 class SHA256DecryptionDataset(Dataset):
-    INPUT_BYTE_SIZE = 256
-    SHA256_BYTE_SIZE = 256
+    """
+    Input: sha256 value of random bits
+    Target: random bits
+
+    Aim: To train a model to predict the random bits, given sha256 value
+    """
+
+    def __init__(self, input_bits_size=DEFAULT_INPUT_BITS_SIZE):
+        self.input_byte_size = input_bits_size // 8
+
+    def __len__(self):
+        # raise NotImplementedError("Dataset has no fixed length")
+        return 1000
+
+    def __getitem__(self, idx):
+        random_bits: bytes = get_random_bytes(self.input_byte_size)
+        random_bits_str: str = convert_bytes_to_binary_str_representation(random_bits)
+        input: torch.Tensor = binary_str_to_tensor(random_bits_str)
+
+        sha256_value: bytes = hashlib.sha256(random_bits).digest()
+        sha256_value_str: str = convert_bytes_to_binary_str_representation(sha256_value)
+        output: torch.Tensor = binary_str_to_tensor(sha256_value_str)
+        return output, input
 
 
 if __name__ == "__main__":
