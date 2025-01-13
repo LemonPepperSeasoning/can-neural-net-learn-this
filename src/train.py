@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
-from src.data_source.utils import SHA256Dataset
+from src.data.sha256Dataset import SHA256EncryptionDataset, SHA256DecryptionDataset
 from src.model.mlp import MLP
 
 
@@ -12,14 +12,13 @@ def train():
     # Parameters
     input_size = 256  # Max input string length
     output_size = 256  # SHA-256 hash output is 32 bytes
-    dataset_size = 1000
-    batch_size = 32
-    epochs = 5
+    batch_size = 256
+    epochs = 50
     learning_rate = 0.001
 
     # Dataset and DataLoader
-    dataset = SHA256Dataset(dataset_size)
-    dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
+    dataset = SHA256DecryptionDataset()
+    dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=False)
 
     # model =
     # Model, Loss, Optimizer
@@ -34,18 +33,9 @@ def train():
     for epoch in range(epochs):
         epoch_loss = 0.0
         for inputs, targets in dataloader:
-            # Pad or truncate inputs to a fixed size
-            padded_inputs = torch.zeros((inputs.size(0), input_size))
-            padded_inputs[:, : inputs.size(1)] = inputs[:, :input_size]
-
             # Forward pass
-            outputs = model(padded_inputs)
-            print(outputs)
+            outputs = model(inputs)
 
-            print(outputs.shape)
-
-            print(inputs.shape)
-            print(targets.shape)
             loss = criterion(outputs, targets)
             epoch_loss += loss.item()
 
