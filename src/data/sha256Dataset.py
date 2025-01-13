@@ -1,29 +1,11 @@
-import os
 import hashlib
 import torch
 from torch.utils.data import Dataset
-
-
-def binary_str_to_tensor(string: str) -> torch.Tensor:
-    """
-    Convert a string of 0s and 1s to a tensor of 0s and 1s.
-    """
-    tensor = torch.tensor([int(char) for char in string], dtype=torch.float32)
-    return tensor
-
-
-def get_random_bytes(n_bytes: int) -> bytes:
-    random_bytes = os.urandom(n_bytes)
-    return random_bytes
-
-
-def convert_bytes_to_binary_str_representation(data: bytes) -> str:
-    """
-    given b"Hello, World!" format
-    return string made up of 0s and 1s. Eg: "0100101010011"
-    """
-    binary_representation = "".join(format(byte, "08b") for byte in data)
-    return binary_representation
+from src.data.utils import (
+    binary_str_to_tensor,
+    convert_bytes_to_binary_str_representation,
+    get_random_bytes,
+)
 
 
 DEFAULT_INPUT_BITS_SIZE = 256

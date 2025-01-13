@@ -1,48 +1,24 @@
-import hashlib
+import os
 import torch
-from torch.utils.data import Dataset
 
 
-# def sha256(data):
-#     return sha256(data).hexdigest()
+def binary_str_to_tensor(string: str) -> torch.Tensor:
+    """
+    Convert a string of 0s and 1s to a tensor of 0s and 1s.
+    """
+    tensor = torch.tensor([int(char) for char in string], dtype=torch.float32)
+    return tensor
 
 
-def incremental_integer():
-    i = 0
-    while True:
-        yield i
-        i += 1
+def get_random_bytes(n_bytes: int) -> bytes:
+    random_bytes = os.urandom(n_bytes)
+    return random_bytes
 
 
-def compute_sha256(input_string):
-    hash_hex = hashlib.sha256(input_string.encode()).hexdigest()
-    # Convert the hex hash to a list of integers (byte values)
-    hash_bytes = bytes.fromhex(hash_hex)
-    return (
-        torch.tensor(list(hash_bytes), dtype=torch.float32) / 255.0
-    )  # Normalize to [0, 1]
-
-
-class SHA256Dataset(Dataset):
-    INPUT_BYTE_SIZE = 256
-    SHA256_BYTE_SIZE = 256
-
-    def __init__(self, size):
-        self.data = [str(i) for i in range(size)]
-        self.labels = [compute_sha256(d) for d in self.data]
-
-    def __len__(self):
-        return len(self.data)
-
-    def __getitem__(self, idx):
-        # Convert string input into numerical input (padded to max_len)
-        input = torch.tensor([ord(c) for c in self.data[idx]], dtype=torch.float32)
-        if len(input) < SHA256Dataset.SHA256_BYTE_SIZE:
-            padded_input = torch.zeros(SHA256Dataset.SHA256_BYTE_SIZE)
-            padded_input[: len(input)] = input
-        else:
-            padded_input = input[: SHA256Dataset.SHA256_BYTE_SIZE]
-
-        print(padded_input)
-        target = self.labels[idx]
-        return padded_input, target
+def convert_bytes_to_binary_str_representation(data: bytes) -> str:
+    """
+    given b"Hello, World!" format
+    return string made up of 0s and 1s. Eg: "0100101010011"
+    """
+    binary_representation = "".join(format(byte, "08b") for byte in data)
+    return binary_representation
