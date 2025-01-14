@@ -3,6 +3,7 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
 from src.data.sha256Dataset import SHA256EncryptionDataset, SHA256DecryptionDataset
+from src.data.logicGatesDataset import IdentityDataset
 from src.model.mlp import MLP
 
 
@@ -13,16 +14,16 @@ def train():
     input_size = 256  # Max input string length
     output_size = 256  # SHA-256 hash output is 32 bytes
     batch_size = 256
-    epochs = 50
+    epochs = 500
     learning_rate = 0.001
 
     # Dataset and DataLoader
-    dataset = SHA256DecryptionDataset()
+    dataset = IdentityDataset()
     dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=False)
 
     # model =
     # Model, Loss, Optimizer
-    hidden_sizes = [128, 256, 128]
+    hidden_sizes = [256, 256, 256]
     activation = "relu"
     dropout = 0.2
     model = MLP(input_size, output_size, hidden_sizes, activation, dropout)
@@ -44,8 +45,11 @@ def train():
             loss.backward()
             optimizer.step()
 
+        print(loss.item())
         print(f"Epoch {epoch+1}/{epochs}, Loss: {epoch_loss:.4f}")
 
+    print(targets)
+    print(outputs)
     print("Training complete!")
 
 
