@@ -5,12 +5,8 @@ from src.data.utils import (
     binary_str_to_tensor,
     convert_bytes_to_binary_str_representation,
     get_random_bytes,
+    DEFAULT_INPUT_BITS_SIZE,
 )
-
-
-DEFAULT_INPUT_BITS_SIZE = 256
-DEFAULT_INPUT_BYTE_SIZE = DEFAULT_INPUT_BITS_SIZE // 8
-SHA256_BITS_SIZE = 256
 
 
 class SHA256EncryptionDataset(Dataset):

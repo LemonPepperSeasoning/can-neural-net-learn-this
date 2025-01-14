@@ -1,6 +1,10 @@
 import os
 import torch
 
+DEFAULT_INPUT_BITS_SIZE = 256
+DEFAULT_INPUT_BYTE_SIZE = DEFAULT_INPUT_BITS_SIZE // 8
+SHA256_BITS_SIZE = 256
+
 
 def binary_str_to_tensor(string: str) -> torch.Tensor:
     """
