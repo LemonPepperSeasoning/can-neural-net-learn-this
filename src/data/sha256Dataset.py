@@ -6,6 +6,7 @@ from src.data.utils import (
     convert_bytes_to_binary_str_representation,
     get_random_bytes,
     DEFAULT_INPUT_BITS_SIZE,
+    DATALOADER_SIZE,
 )
 
 
@@ -21,8 +22,7 @@ class SHA256EncryptionDataset(Dataset):
         self.input_byte_size = input_bits_size // 8
 
     def __len__(self):
-        # raise NotImplementedError("Dataset has no fixed length")
-        return 1000
+        return DATALOADER_SIZE
 
     def __getitem__(self, idx):
         random_bits: bytes = get_random_bytes(self.input_byte_size)
@@ -31,8 +31,8 @@ class SHA256EncryptionDataset(Dataset):
 
         sha256_value: bytes = hashlib.sha256(random_bits).digest()
         sha256_value_str: str = convert_bytes_to_binary_str_representation(sha256_value)
-        output: torch.Tensor = binary_str_to_tensor(sha256_value_str)
-        return input, output
+        target: torch.Tensor = binary_str_to_tensor(sha256_value_str)
+        return input, target
 
 
 class SHA256DecryptionDataset(Dataset):
@@ -47,8 +47,7 @@ class SHA256DecryptionDataset(Dataset):
         self.input_byte_size = input_bits_size // 8
 
     def __len__(self):
-        # raise NotImplementedError("Dataset has no fixed length")
-        return 1000
+        return DATALOADER_SIZE
 
     def __getitem__(self, idx):
         random_bits: bytes = get_random_bytes(self.input_byte_size)

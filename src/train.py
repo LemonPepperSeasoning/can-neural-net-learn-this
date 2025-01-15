@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
 from src.data.sha256Dataset import SHA256EncryptionDataset, SHA256DecryptionDataset
-from src.data.logicGatesDataset import IdentityDataset
+from src.data.logicGatesDataset import IdentityDataset, ANDDataset
 from src.model.mlp import MLP
 
 
@@ -18,16 +18,20 @@ def train():
     learning_rate = 0.001
 
     # Dataset and DataLoader
-    dataset = IdentityDataset()
+    dataset = ANDDataset()
     dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=False)
 
     # model =
     # Model, Loss, Optimizer
-    hidden_sizes = [256, 256, 256]
+    # hidden_sizes = [256, 256, 256]
+    hidden_sizes = [64, 64, 64, 128, 256, 128, 64, 64, 64]
+
     activation = "relu"
-    dropout = 0.2
+    # dropout = 0.2
+    dropout = 0
     model = MLP(input_size, output_size, hidden_sizes, activation, dropout)
     criterion = nn.MSELoss()
+    # criterion = nn.BCEWithLogitsLoss()
     optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 
     # Training loop
