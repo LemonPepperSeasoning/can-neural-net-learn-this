@@ -1,8 +1,7 @@
 import torch
 from torch.utils.data import Dataset
 from src.data.utils import (
-    binary_str_to_tensor,
-    convert_bytes_to_binary_str_representation,
+    bytes_to_binary_tensor,
     get_random_bytes,
     DEFAULT_INPUT_BITS_SIZE,
     DATALOADER_SIZE,
@@ -26,8 +25,7 @@ class IdentityDataset(Dataset):
 
     def __getitem__(self, idx):
         random_bits: bytes = get_random_bytes(self.input_byte_size)
-        random_bits_str: str = convert_bytes_to_binary_str_representation(random_bits)
-        input: torch.Tensor = binary_str_to_tensor(random_bits_str)
+        input: torch.Tensor = bytes_to_binary_tensor(random_bits)
         return input, input
 
 
@@ -52,13 +50,8 @@ class ANDDataset(Dataset):
 
     def __getitem__(self, idx):
         random_bits: bytes = get_random_bytes(self.input_byte_size)
-        random_bits_str: str = convert_bytes_to_binary_str_representation(random_bits)
-        input: torch.Tensor = binary_str_to_tensor(random_bits_str)
-
         result: bytes = bytes([b1 & b2 for b1, b2 in zip(random_bits, self.mask_bits)])
-        result_in_str: str = convert_bytes_to_binary_str_representation(result)
-        target: torch.Tensor = binary_str_to_tensor(result_in_str)
-        return input, target
+        return bytes_to_binary_tensor(random_bits), bytes_to_binary_tensor(result)
 
 
 class ORDataset(Dataset):
@@ -82,13 +75,8 @@ class ORDataset(Dataset):
 
     def __getitem__(self, idx):
         random_bits: bytes = get_random_bytes(self.input_byte_size)
-        random_bits_str: str = convert_bytes_to_binary_str_representation(random_bits)
-        input: torch.Tensor = binary_str_to_tensor(random_bits_str)
-
         result: bytes = bytes([b1 | b2 for b1, b2 in zip(random_bits, self.mask_bits)])
-        result_in_str: str = convert_bytes_to_binary_str_representation(result)
-        target: torch.Tensor = binary_str_to_tensor(result_in_str)
-        return input, target
+        return bytes_to_binary_tensor(random_bits), bytes_to_binary_tensor(result)
 
 
 class NOTDataset(Dataset):
@@ -112,13 +100,8 @@ class NOTDataset(Dataset):
 
     def __getitem__(self, idx):
         random_bits: bytes = get_random_bytes(self.input_byte_size)
-        random_bits_str: str = convert_bytes_to_binary_str_representation(random_bits)
-        input: torch.Tensor = binary_str_to_tensor(random_bits_str)
-
         result: bytes = bytes(~byte & NOTDataset.B_255 for byte in random_bits)
-        result_bits_str: str = convert_bytes_to_binary_str_representation(result)
-        target: torch.Tensor = binary_str_to_tensor(result_bits_str)
-        return input, target
+        return bytes_to_binary_tensor(random_bits), bytes_to_binary_tensor(result)
 
 
 class XOR_Dataset(Dataset):
@@ -142,13 +125,8 @@ class XOR_Dataset(Dataset):
 
     def __getitem__(self, idx):
         random_bits: bytes = get_random_bytes(self.input_byte_size)
-        random_bits_str: str = convert_bytes_to_binary_str_representation(random_bits)
-        input: torch.Tensor = binary_str_to_tensor(random_bits_str)
-
         result: bytes = bytes([b1 ^ b2 for b1, b2 in zip(random_bits, self.mask_bits)])
-        result_in_str: str = convert_bytes_to_binary_str_representation(result)
-        target: torch.Tensor = binary_str_to_tensor(result_in_str)
-        return input, target
+        return bytes_to_binary_tensor(random_bits), bytes_to_binary_tensor(result)
 
 
 class CombinedLogicGatesDataset(Dataset):

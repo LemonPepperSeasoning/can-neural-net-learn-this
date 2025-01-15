@@ -2,8 +2,7 @@ import hashlib
 import torch
 from torch.utils.data import Dataset
 from src.data.utils import (
-    binary_str_to_tensor,
-    convert_bytes_to_binary_str_representation,
+    bytes_to_binary_tensor,
     get_random_bytes,
     DEFAULT_INPUT_BITS_SIZE,
     DATALOADER_SIZE,
@@ -26,13 +25,8 @@ class SHA256EncryptionDataset(Dataset):
 
     def __getitem__(self, idx):
         random_bits: bytes = get_random_bytes(self.input_byte_size)
-        random_bits_str: str = convert_bytes_to_binary_str_representation(random_bits)
-        input: torch.Tensor = binary_str_to_tensor(random_bits_str)
-
         sha256_value: bytes = hashlib.sha256(random_bits).digest()
-        sha256_value_str: str = convert_bytes_to_binary_str_representation(sha256_value)
-        target: torch.Tensor = binary_str_to_tensor(sha256_value_str)
-        return input, target
+        return bytes_to_binary_tensor(random_bits), bytes_to_binary_tensor(sha256_value)
 
 
 class SHA256DecryptionDataset(Dataset):
@@ -51,13 +45,8 @@ class SHA256DecryptionDataset(Dataset):
 
     def __getitem__(self, idx):
         random_bits: bytes = get_random_bytes(self.input_byte_size)
-        random_bits_str: str = convert_bytes_to_binary_str_representation(random_bits)
-        input: torch.Tensor = binary_str_to_tensor(random_bits_str)
-
         sha256_value: bytes = hashlib.sha256(random_bits).digest()
-        sha256_value_str: str = convert_bytes_to_binary_str_representation(sha256_value)
-        output: torch.Tensor = binary_str_to_tensor(sha256_value_str)
-        return output, input
+        return bytes_to_binary_tensor(sha256_value), bytes_to_binary_tensor(random_bits)
 
 
 if __name__ == "__main__":

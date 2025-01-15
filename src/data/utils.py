@@ -34,3 +34,9 @@ def convert_bytes_to_binary_str_representation(data: bytes) -> str:
     """
     binary_representation = "".join(format(byte, "08b") for byte in data)
     return binary_representation
+
+
+def bytes_to_binary_tensor(byte_data: bytes) -> torch.Tensor:
+    binary_str = convert_bytes_to_binary_str_representation(byte_data)
+    tensor = binary_str_to_tensor(binary_str)
+    return tensor
