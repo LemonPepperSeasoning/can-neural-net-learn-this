@@ -8,8 +8,6 @@ from src.model.mlp import MLP
 
 
 def train():
-    NUM_EPOCHS = 10
-
     # Parameters
     input_size = 256  # Max input string length
     output_size = 256  # SHA-256 hash output is 32 bytes
@@ -18,13 +16,14 @@ def train():
     learning_rate = 0.001
 
     # Dataset and DataLoader
-    dataset = ANDDataset()
+    dataset = SHA256DecryptionDataset()
     dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=False)
 
     # model =
     # Model, Loss, Optimizer
     # hidden_sizes = [256, 256, 256]
-    hidden_sizes = [64, 64, 64, 128, 256, 128, 64, 64, 64]
+    hidden_sizes = [2048, 2048, 2048]
+    # hidden_sizes = [64, 64, 64, 128, 256, 128, 64, 64, 64]
 
     activation = "relu"
     # dropout = 0.2
