@@ -1,5 +1,7 @@
 # can-neural-net-learn-this
 
+Tldr: Teaching MLP to learn Logic-Gate-Functions seems really difficult. I need to figure out other strategies.
+
 | Algorithm         | Loss  | Comment                                                                                                                     |
 | ----------------- | ----- | --------------------------------------------------------------------------------------------------------------------------- |
 | Sha256 Encryption | 0.25  | Not learning. Its just predicting 0.5 for each bit                                                                          |
