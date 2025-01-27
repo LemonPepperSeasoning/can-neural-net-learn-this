@@ -12,6 +12,7 @@ HALF_INPUT_SIZE = DEFAULT_INPUT_BITS_SIZE // 8 // 2
 ZEROS = b"\x00"
 ONES = b"\xff"  # 0xff is 11111111 in binary
 DEFAULT_MASK_BITS = ZEROS * HALF_INPUT_SIZE + ONES * HALF_INPUT_SIZE
+SHIFT_N_BITS = 1
 
 
 def binary_str_to_tensor(string: str) -> torch.Tensor:

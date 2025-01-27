@@ -3,9 +3,11 @@ from torch.utils.data import Dataset
 from src.data.utils import (
     bytes_to_binary_tensor,
     get_random_bytes,
+    convert_bytes_to_binary_str_representation,
     DEFAULT_INPUT_BITS_SIZE,
     DATALOADER_SIZE,
     DEFAULT_MASK_BITS,
+    SHIFT_N_BITS,
 )
 
 
@@ -129,12 +131,44 @@ class XOR_Dataset(Dataset):
         return bytes_to_binary_tensor(random_bits), bytes_to_binary_tensor(result)
 
 
+class ShiftRight_Dataset(Dataset):
+    """
+    Input: random bits
+    Target: result of RIGHT SHIFT operation on random bits
+
+    Aim: Test if NN can learn basic RIGHT SHIFT operation
+    """
+
+    def __init__(
+        self,
+        input_bits_size=DEFAULT_INPUT_BITS_SIZE,
+        shift_n_bits=SHIFT_N_BITS,
+    ):
+        self.input_byte_size = input_bits_size // 8
+        self.shift_n_bits = shift_n_bits
+
+    def __len__(self):
+        return DATALOADER_SIZE
+
+    def __getitem__(self, idx):
+        random_bits: bytes = get_random_bytes(self.input_byte_size)
+        num = int.from_bytes(random_bits, byteorder="big")
+        shifted_num = num >> self.shift_n_bits
+        # Convert the shifted integer back to bytes
+        shifted_bytes = shifted_num.to_bytes(
+            self.input_byte_size, byteorder="big", signed=False
+        )
+        return bytes_to_binary_tensor(random_bits), bytes_to_binary_tensor(
+            shifted_bytes
+        )
+
+
 class CombinedLogicGatesDataset(Dataset):
     pass
 
 
 if __name__ == "__main__":
-    x = NOTDataset()
+    x = ShiftRight_Dataset()
 
     a, b = x[0]
     print(a)

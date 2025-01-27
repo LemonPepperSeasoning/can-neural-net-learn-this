@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader, random_split
 from src.data.sha256Dataset import SHA256EncryptionDataset, SHA256DecryptionDataset
-from src.data.logicGatesDataset import IdentityDataset, ANDDataset
+from src.data.logicGatesDataset import IdentityDataset, ANDDataset, ShiftRight_Dataset
 from src.model.mlp import MLP
 
 
@@ -16,7 +16,7 @@ def train():
     learning_rate = 0.001
 
     # Dataset and DataLoader
-    dataset = ANDDataset()
+    dataset = ShiftRight_Dataset()
     # dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=False)
     train_size = int(0.9 * len(dataset))  # 90% for training
     test_size = len(dataset) - train_size  # Remaining 20% for testing
@@ -43,12 +43,9 @@ def train():
         epoch_loss = 0.0
         model.train()  # Set model to training mode
         for inputs, targets in train_loader:
-            # Forward pass
             outputs = model(inputs)
-
             loss = criterion(outputs, targets)
             epoch_loss += loss.item()
-
             # Backward pass and optimization
             optimizer.zero_grad()
             loss.backward()
@@ -65,9 +62,7 @@ def train():
                 rounded_tensor = torch.round(outputs)
                 correct_predictions = torch.sum(rounded_tensor == targets)
                 accuracy = correct_predictions.item() / targets.numel()
-                # print(
-                #     f"Correct predictions: {correct_predictions.item()} / {targets.numel()}"
-                # )
+                # print( f"Correct predictions: {correct_predictions.item()} / {targets.numel()}")
                 sum_accuracies += accuracy
                 counter += 1
             print(f"Average accuracy: {sum_accuracies * 100 / counter:.2f}%")
