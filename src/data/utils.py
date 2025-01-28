@@ -41,3 +41,8 @@ def bytes_to_binary_tensor(byte_data: bytes) -> torch.Tensor:
     binary_str = convert_bytes_to_binary_str_representation(byte_data)
     tensor = binary_str_to_tensor(binary_str)
     return tensor
+
+
+def int_to_bytes(value: int, byte_length: int) -> bytes:
+    """Convert an integer to bytes of a specified length."""
+    return value.to_bytes(byte_length, byteorder="big", signed=False)
