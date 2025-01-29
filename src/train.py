@@ -2,17 +2,21 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader, random_split
-from src.data.sha256Dataset import (
+from data.sha256_dataset import (
     SHA256Dataset,
     SHA256Step1Dataset,
 )
-from src.data.logicGatesDataset import IdentityDataset, ANDDataset, ShiftRight_Dataset
+from data.logic_gates_dataset import (
+    IdentityFunctionDataset,
+    ANDGateDataset,
+    ShiftRightFunctionDataset,
+)
 from src.model.mlp import MLP
 
 
 def train():
     # Parameters
-    input_size = 512  # Max input string length
+    input_size = 256  # Max input string length
     # output_size = 256  # SHA-256 hash output is 32 bytes
     output_size = 256
     batch_size = 256
@@ -20,7 +24,7 @@ def train():
     learning_rate = 0.001
 
     # Dataset and DataLoader
-    dataset = SHA256Step1Dataset(reverse=True)
+    dataset = SHA256Dataset()
     # dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=False)
     train_size = int(0.9 * len(dataset))  # 90% for training
     test_size = len(dataset) - train_size  # Remaining 20% for testing

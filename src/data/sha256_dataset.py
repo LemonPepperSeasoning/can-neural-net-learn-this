@@ -54,6 +54,6 @@ class SHA256Step1Dataset(AbstractBinaryDataset):
 
 
 if __name__ == "__main__":
-    x = SHA256EncryptionDataset()
+    x = SHA256Dataset()
     y = x[0]
     # print(y)
