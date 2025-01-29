@@ -5,6 +5,7 @@ from src.data.utils import (
     bytes_to_binary_tensor,
     get_random_bytes,
     convert_bytes_to_binary_str_representation,
+    circular_right_shift,
     DEFAULT_INPUT_BITS_SIZE,
     DEFAULT_DATALOADER_SIZE,
     DEFAULT_MASK_BITS,
@@ -115,7 +116,7 @@ class XORGateDataset(AbstractBinaryDataset):
         return result
 
 
-class ShiftRightFunctionDataset(AbstractBinaryDataset):
+class RightShiftFunctionDataset(AbstractBinaryDataset):
     """
     Input: random bits
     Target: result of RIGHT SHIFT operation on random bits
@@ -135,19 +136,76 @@ class ShiftRightFunctionDataset(AbstractBinaryDataset):
     def apply_transformation(self, input_bytes: bytes) -> bytes:
         byte_in_integer = int.from_bytes(input_bytes, byteorder="big")
         shifted_integer = byte_in_integer >> self.shift_n_bits
-        # Convert the shifted integer back to bytes
         shifted_bytes = shifted_integer.to_bytes(
             self.input_byte_size, byteorder="big", signed=False
         )
         return shifted_bytes
 
 
-class CombinedLogicGatesDataset(AbstractBinaryDataset):
-    pass
+class CircularRightShiftFunctionDataset(AbstractBinaryDataset):
+    """
+    Input: random bits
+    Target: result of RIGHT SHIFT operation on random bits
+
+    Aim: Test if NN can learn basic RIGHT SHIFT operation
+    """
+
+    def __init__(
+        self,
+        input_bits_size=DEFAULT_INPUT_BITS_SIZE,
+        reverse=False,
+        shift_n_bits=SHIFT_N_BITS,
+    ):
+        super().__init__(input_bits_size, reverse=reverse)
+        self.shift_n_bits = shift_n_bits
+
+    def apply_transformation(self, input_bytes: bytes) -> bytes:
+        byte_in_integer = int.from_bytes(input_bytes, byteorder="big")
+        shifted_integer = circular_right_shift(
+            byte_in_integer, self.shift_n_bits, self.input_bits_size
+        )
+        shifted_bytes = shifted_integer.to_bytes(
+            self.input_byte_size, byteorder="big", signed=False
+        )
+        return shifted_bytes
+
+
+class Sigma0Dataset(AbstractBinaryDataset):
+    """
+    ROTR^7(x) XOR ROTR^18(x) XOR SHR^3(x)
+    """
+
+    def __init__(
+        self,
+        input_bits_size=DEFAULT_INPUT_BITS_SIZE,
+        reverse=False,
+    ):
+        super().__init__(input_bits_size, reverse=reverse)
+
+    def apply_transformation(self, input_bytes: bytes) -> bytes:
+        byte_in_integer = int.from_bytes(input_bytes, byteorder="big")
+
+        rotr7 = circular_right_shift(byte_in_integer, 7, self.input_bits_size)
+        rotr18 = circular_right_shift(byte_in_integer, 18, self.input_bits_size)
+        shr3 = byte_in_integer >> 3
+
+        rotr7_bytes = rotr7.to_bytes(
+            self.input_byte_size, byteorder="big", signed=False
+        )
+        rotr18_bytes = rotr18.to_bytes(
+            self.input_byte_size, byteorder="big", signed=False
+        )
+        shr3_bytes = shr3.to_bytes(self.input_byte_size, byteorder="big", signed=False)
+
+        rotr7_xor_rotr18: bytes = bytes(
+            [b1 ^ b2 for b1, b2 in zip(rotr7_bytes, rotr18_bytes)]
+        )
+        result: bytes = bytes([b1 ^ b2 for b1, b2 in zip(rotr7_xor_rotr18, shr3_bytes)])
+        return result
 
 
 if __name__ == "__main__":
-    x = ShiftRightFunctionDataset()
+    x = CircularRightShiftFunctionDataset()
 
     a, b = x[0]
     print(a)

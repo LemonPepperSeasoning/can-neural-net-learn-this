@@ -14,6 +14,7 @@
 | Sha256 Decryption     |        :x:         |   Defail MLP   |   TBD   |      50% |
 | Sha256 Step 1         | :white_check_mark: |   Defail MLP   |   TBD   |     100% |
 | Sha256 Step 1 reverse | :white_check_mark: |   Defail MLP   |   TBD   |     100% |
+| Sigma0Dataset         |        :x:         |   Defail MLP   |   TBD   |      50% |
 
 ## Description:
 

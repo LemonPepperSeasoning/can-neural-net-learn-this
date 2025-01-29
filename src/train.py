@@ -2,14 +2,16 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader, random_split
-from data.sha256_dataset import (
+from src.data.sha256_dataset import (
     SHA256Dataset,
     SHA256Step1Dataset,
 )
-from data.logic_gates_dataset import (
+from src.data.logic_gates_dataset import (
     IdentityFunctionDataset,
     ANDGateDataset,
-    ShiftRightFunctionDataset,
+    RightShiftFunctionDataset,
+    Sigma0Dataset,
+    CircularRightShiftFunctionDataset,
 )
 from src.model.mlp import MLP
 
@@ -20,11 +22,11 @@ def train():
     # output_size = 256  # SHA-256 hash output is 32 bytes
     output_size = 256
     batch_size = 256
-    epochs = 500
+    epochs = 10
     learning_rate = 0.001
 
     # Dataset and DataLoader
-    dataset = SHA256Dataset()
+    dataset = Sigma0Dataset()
     # dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=False)
     train_size = int(0.9 * len(dataset))  # 90% for training
     test_size = len(dataset) - train_size  # Remaining 20% for testing
@@ -35,7 +37,8 @@ def train():
     # model =
     # Model, Loss, Optimizer
     # hidden_sizes = [256, 256, 256]
-    hidden_sizes = [2048, 2048, 2048]
+    hidden_sizes = [4096, 4096, 4096]
+    # hidden_sizes = [2048] * 3
     # hidden_sizes = [64, 64, 64, 128, 256, 128, 64, 64, 64]
 
     activation = "relu"

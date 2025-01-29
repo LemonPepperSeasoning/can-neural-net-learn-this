@@ -17,6 +17,7 @@ class AbstractBinaryDataset(ABC, Dataset):
         dataset_size: int = DEFAULT_DATALOADER_SIZE,
         reverse=False,
     ):
+        self.input_bits_size = input_bits_size
         self.input_byte_size = input_bits_size // 8
         self.reverse = reverse
         self.dataset_size = dataset_size

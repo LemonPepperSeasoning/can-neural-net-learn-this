@@ -46,3 +46,18 @@ def bytes_to_binary_tensor(byte_data: bytes) -> torch.Tensor:
 def int_to_bytes(value: int, byte_length: int) -> bytes:
     """Convert an integer to bytes of a specified length."""
     return value.to_bytes(byte_length, byteorder="big", signed=False)
+
+
+def circular_right_shift(value: int, shift: int, bit_size: int) -> int:
+    """Performs a circular right shift on an integer.
+
+    Args:
+        value (int): The integer to shift.
+        shift (int): The number of bits to shift.
+        bit_size (int): The total number of bits in the integer.
+
+    Returns:
+        int: The result of the circular right shift.
+    """
+    shift %= bit_size  # Ensure shift is within range
+    return (value >> shift) | ((value & ((1 << shift) - 1)) << (bit_size - shift))
