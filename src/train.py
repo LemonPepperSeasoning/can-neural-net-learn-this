@@ -37,8 +37,8 @@ def train():
     # model =
     # Model, Loss, Optimizer
     # hidden_sizes = [256, 256, 256]
-    hidden_sizes = [4096, 4096, 4096]
-    # hidden_sizes = [2048] * 3
+    # hidden_sizes = [4096, 4096, 4096]
+    hidden_sizes = [2048] * 20
     # hidden_sizes = [64, 64, 64, 128, 256, 128, 64, 64, 64]
 
     activation = "relu"
